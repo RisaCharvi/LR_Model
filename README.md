@@ -41,11 +41,11 @@ Run the executable:
 Expected output:
 
 ```
-Prediction for [1, 5, 9]: 13.000000
+Prediction for [1, 5, 9]: 14.000000
 Learned Weights:
+-0.000000 
 1.000000 
 1.000000 
-1.000000
 ```
 
 ---
