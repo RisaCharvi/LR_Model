@@ -7,9 +7,8 @@ matrix transpose(matrix data) {
     result.rows = data.cols;
     result.cols = data.rows;
 
-    result.array = (long double **)malloc(result.rows * sizeof(long double *));
+    result.array = allocate_2d_array(result.rows, result.cols);
     for (int i = 0; i < result.rows; i++) {
-        result.array[i] = (long double *)malloc(result.cols * sizeof(long double));
         for (int j = 0; j < result.cols; j++) {
             result.array[i][j] = data.array[j][i];
         }
@@ -27,10 +26,9 @@ matrix multiply(matrix A, matrix B) {
     matrix result;
     result.rows = A.rows;
     result.cols = B.cols;
-    result.array = (long double **)malloc(result.rows * sizeof(long double *));
+    result.array = allocate_2d_array(result.rows, result.cols);
 
     for (int i = 0; i < result.rows; i++) {
-        result.array[i] = (long double *)malloc(result.cols * sizeof(long double));
         for (int j = 0; j < result.cols; j++) {
             result.array[i][j] = 0.0;
             for (int k = 0; k < A.cols; k++) {
@@ -51,14 +49,10 @@ matrix inverse(matrix data) {
 
     matrix result;
     result.rows = result.cols = n;
-    result.array = (long double **)malloc(n * sizeof(long double *));
-    for (int i = 0; i < n; i++) {
-        result.array[i] = (long double *)calloc(n, sizeof(long double));
-    }
+    result.array = allocate_2d_array(n, n);
 
-    long double **aug = (long double **)malloc(n * sizeof(long double *));
+    long double **aug = allocate_2d_array(n, 2 * n);
     for (int i = 0; i < n; i++) {
-        aug[i] = (long double *)malloc(2 * n * sizeof(long double));
         for (int j = 0; j < n; j++) {
             aug[i][j] = data.array[i][j];
         }
@@ -116,13 +110,33 @@ long double runModel(matrix weight, LRmodel model, matrix input) {
 
 void free_matrix(matrix m) {
     if (m.array == NULL) return;
-
     for (int i = 0; i < m.rows; i++) {
         free(m.array[i]);
     }
     free(m.array);
-    m.array = NULL;
-    m.rows = 0;
-    m.cols = 0;
 }
 
+matrix allocate_matrix(int rows, int cols) {
+    matrix m;
+    m.rows = rows;
+    m.cols = cols;
+    m.array = allocate_2d_array(rows, cols);
+    return m;
+}
+
+long double **allocate_2d_array(int rows, int cols) {
+    long double **array = (long double **)malloc(rows * sizeof(long double *));
+    for (int i = 0; i < rows; i++) {
+        array[i] = (long double *)malloc(cols * sizeof(long double));
+    }
+    return array;
+}
+
+void fill_input_output(matrix X, matrix Y, long double **input_data, long double **output_data) {
+    for (int i = 0; i < X.rows; i++) {
+        for (int j = 0; j < X.cols; j++) {
+            X.array[i][j] = input_data[i][j];
+        }
+        Y.array[i][0] = output_data[i][0];
+    }
+}
