@@ -1,4 +1,4 @@
-# # Linear Regression in C
+Linear Regression in C
 
 This project implements **linear regression** using the **normal equation** method in C. It includes matrix operations like multiplication, transposition, and inversion—essential components of solving for regression weights without external libraries.
 
